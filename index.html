@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,
+     initial-scale=1.0">
+    <title>Search SKU Number</title>
+
+    <style>
+        label {
+            display: block;
+            margin: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- <label> SkuNumber:<input type="text" class="skuNumber" /></label>
+    <button>Search</button> -->
+    <h1> Welcome to our Search Site</h1>
+
+    <form class="form">
+        <input type="text" name="searchForSkuNumber" placeholder="Enter the SKU Number here">
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="displayBookDetails">
+        <ul> </ul>
+    </div>
+
+
+    <script>
+        const formInputData = document.querySelector('.form');
+
+        formInputData.addEventListener('submit', event => {
+            event.preventDefault();
+
+            const formData = new FormData(formInputData);
+
+            const data = new URLSearchParams(formData);
+
+            fetch('/find', {
+                method: 'POST',
+                body: data
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.length == 3) {
+                        const BookTitle = `<li id = "BookDetails"> Book Title : ${data[0]} </li>`;
+                        document.querySelector('ul').insertAdjacentHTML('beforeend', BookTitle);
+                        const BookAuthor = `<li id = "BookDetails"> Author(s) : ${data[1]} </li>`;
+                        document.querySelector('ul').insertAdjacentHTML('beforeend', BookAuthor);
+                        const BookPrice = `<li id = "BookDetails"> Book Price : ${data[2]} </li>`;
+                        document.querySelector('ul').insertAdjacentHTML('beforeend', BookPrice);
+
+                    } else {
+                        const NoBookFound = `<li id = "BookDetails"> Book with the entered skuNumber is not Found. </li>`
+                        document.querySelector('ul').insertAdjacentHTML('beforeend', NoBookFound);
+
+                    }
+                })
+                .catch(error => console.log(error));
+        })
+    </script>
+</body>
+
+</html>
